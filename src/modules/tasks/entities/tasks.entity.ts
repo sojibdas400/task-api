@@ -1,8 +1,10 @@
+import { UserEntity } from 'src/modules/auth/entities/user.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -21,6 +23,9 @@ export class TasksEntity extends BaseEntity {
 
   @Column()
   status: TaskStatus;
+
+  @ManyToOne(() => UserEntity, (user) => user.tasks, { eager: false })
+  user: UserEntity;
 
   @CreateDateColumn()
   createdAt: Date;
