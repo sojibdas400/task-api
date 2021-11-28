@@ -16,8 +16,9 @@ export class TasksService {
 
   public async getAllTasks(
     filterTaskDto: FilterTaskDto,
+    user: UserEntity,
   ): Promise<TasksEntity[]> {
-    return this.taskRepository.getTasks(filterTaskDto);
+    return this.taskRepository.getTasks(filterTaskDto, user);
   }
 
   public async createTask(
@@ -27,19 +28,20 @@ export class TasksService {
     return this.taskRepository.createTask(createTaskDto, user);
   }
 
-  public async getTaskById(id: string): Promise<TasksEntity> {
-    return this.taskRepository.getTaskById(id);
+  public async getTaskById(id: string, user: UserEntity): Promise<TasksEntity> {
+    return this.taskRepository.getTaskById(id, user);
   }
 
-  public async deleteTask(id: string): Promise<void> {
-    const result = await this.taskRepository.delete(id);
+  public async deleteTask(id: string, user: UserEntity): Promise<void> {
+    const result = await this.taskRepository.delete({ id, user });
     console.log(result);
   }
 
   public async updateTaskStatus(
     id: string,
     status: TaskStatus,
+    user,
   ): Promise<TasksEntity> {
-    return this.taskRepository.updateTaskStatus(id, status);
+    return this.taskRepository.updateTaskStatus(id, status, user);
   }
 }

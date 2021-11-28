@@ -23,15 +23,30 @@ export class TasksRepository extends Repository<TasksEntity> {
     return task;
   }
 
-  public async getTasks(filterTaskDto: FilterTaskDto): Promise<TasksEntity[]> {
+  public async getTasks(
+    filterTaskDto: FilterTaskDto,
+    user: UserEntity,
+  ): Promise<TasksEntity[]> {
+    const { status, search } = filterTaskDto;
     const query = this.createQueryBuilder('Task');
+    query.where({ user });
 
+    if (status) {
+      query.andWhere('task.status =:status', { status });
+    }
+
+    if (search) {
+      query.andWhere(
+        '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
+        { search: `%${search}%` },
+      );
+    }
     const tasks = await query.getMany();
     return tasks;
   }
 
-  public async getTaskById(id: string): Promise<TasksEntity> {
-    const found = await this.findOne(id);
+  public async getTaskById(id: string, user: UserEntity): Promise<TasksEntity> {
+    const found = await this.findOne({ where: { id, user } });
     if (!found) throw new NotFoundException(`Task with id "${id}" not found`);
     return found;
   }
@@ -39,8 +54,9 @@ export class TasksRepository extends Repository<TasksEntity> {
   public async updateTaskStatus(
     id: string,
     status: TaskStatus,
+    user: UserEntity,
   ): Promise<TasksEntity> {
-    const task = await this.getTaskById(id);
+    const task = await this.getTaskById(id, user);
     task.status = status;
     await this.save(task);
     return task;

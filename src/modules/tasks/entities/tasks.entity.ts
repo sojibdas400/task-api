@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { UserEntity } from 'src/modules/auth/entities/user.entity';
 import {
   BaseEntity,
@@ -12,7 +13,7 @@ import { TaskStatus } from '../enums';
 
 @Entity('tasksEntity')
 export class TasksEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -25,6 +26,7 @@ export class TasksEntity extends BaseEntity {
   status: TaskStatus;
 
   @ManyToOne(() => UserEntity, (user) => user.tasks, { eager: false })
+  @Exclude({ toPlainOnly: true })
   user: UserEntity;
 
   @CreateDateColumn()

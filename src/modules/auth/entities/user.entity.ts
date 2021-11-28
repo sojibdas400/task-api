@@ -12,7 +12,7 @@ import { TasksEntity } from 'src/modules/tasks/entities/tasks.entity';
 
 @Entity('userEntity')
 export class UserEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
