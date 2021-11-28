@@ -12,7 +12,6 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: '${process.env.jwtSecret}',
-      // secret: 'secret',
       signOptions: {
         expiresIn: '1d',
       },
